@@ -1,7 +1,7 @@
 module control_unit(
     input  [6:0] op, funct7,
     input  [2:0] funct3,
-    output  reg_write, mem_write, alu_src, jump, branch,
+    output  reg_write, mem_write, alu_src, jump, branch, jalr,
     output  [1:0] result_src, imm_src, 
     output  [3:0] alu_control
 );
@@ -24,7 +24,8 @@ module control_unit(
         .alu_src(alu_src),
         .reg_write(reg_write),
         .jump(jump),
-        .branch(branch)
+        .branch(branch),
+        .jalr(jalr)
     );
 
     alu_decoder alu_decoder(

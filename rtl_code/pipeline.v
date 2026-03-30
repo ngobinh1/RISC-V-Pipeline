@@ -42,19 +42,22 @@ endmodule
 //pipeline cho decode và execute
 module pipeline_2_3 (
     input wire clk, rst, clr,
-    input wire reg_write_d, mem_write_d, alu_src_d, jump_d, branch_d,
+    input wire reg_write_d, mem_write_d, alu_src_d, jump_d, branch_d, jalr_d, 
+    input wire [2:0] funct3_d,
     input wire [1:0] result_src_d,
     input wire [3:0] alu_control_d,
     input wire [31:0] read_data_1_d, read_data_2_d, pc_d, pc_plus_4_d, imm_ext_d,
     input wire [4:0] rs1_d, rs2_d, rd_d, 
-    output  reg_write_e, mem_write_e, alu_src_e, jump_e, branch_e,
+    output  reg_write_e, mem_write_e, alu_src_e, jump_e, branch_e, jalr_e,
+    output  [2:0] funct3_e,
     output  [1:0] result_src_e,
     output  [3:0] alu_control_e,
     output  [31:0] read_data_1_e, read_data_2_e, pc_e, pc_plus_4_e, imm_ext_e,
     output  [4:0] rs1_e, rs2_e, rd_e
 );  
-    reg reg_write_reg, mem_write_reg, alu_src_reg, jump_reg, branch_reg;
+    reg reg_write_reg, mem_write_reg, alu_src_reg, jump_reg, branch_reg, jalr_reg;
     reg [1:0] result_src_reg;
+    reg [2:0] funct3_reg;
     reg [3:0] alu_control_reg;
     reg [31:0] read_data_1_reg, read_data_2_reg, pc_reg, pc_plus_4_reg, imm_ext_reg;
     reg [4:0] rs1_reg, rs2_reg, rd_reg;
@@ -67,6 +70,8 @@ module pipeline_2_3 (
         jump_reg = 1'b0;
         branch_reg = 1'b0;
         result_src_reg = 2'b00;
+        jalr_reg = 1'b0;
+        funct3_reg = 3'b000;
         alu_control_reg = 4'b0000;
         read_data_1_reg = 32'h00000000;
         read_data_2_reg = 32'h00000000;
@@ -84,7 +89,9 @@ module pipeline_2_3 (
             mem_write_reg <= 1'b0;
             alu_src_reg <= 1'b0;
             jump_reg <= 1'b0;
+            jalr_reg <= 1'b0;
             branch_reg <= 1'b0;
+            funct3_reg <= 3'b000;
             result_src_reg <= 2'b00;
             alu_control_reg <= 4'b0000;
             read_data_1_reg <= 32'h00000000;
@@ -100,6 +107,8 @@ module pipeline_2_3 (
             reg_write_reg <= reg_write_d;
             mem_write_reg <= mem_write_d;
             alu_src_reg <= alu_src_d;
+            jalr_reg <= jalr_d;
+            funct3_reg <= funct3_d;
             jump_reg <= jump_d;
             branch_reg <= branch_d;
             result_src_reg <= result_src_d;
@@ -119,6 +128,8 @@ module pipeline_2_3 (
     assign mem_write_e = mem_write_reg;
     assign alu_src_e = alu_src_reg;
     assign jump_e = jump_reg;
+    assign jalr_e = jalr_reg;
+    assign funct3_e = funct3_reg;
     assign branch_e = branch_reg;
     assign result_src_e = result_src_reg;
     assign alu_control_e = alu_control_reg;

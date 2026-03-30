@@ -4,12 +4,15 @@ module decode_cycle (
     input wire [31:0] instr_d, result_w, pc_in, pc_plus_4_in,
     output  [31:0] imm_ext_d, read_data_1_d, read_data_2_d,
     output  [4:0] rs1_d, rs2_d, rd_d,
-    output  reg_write_d, mem_write_d, jump_d, branch_d, alu_src_d,
+    output  reg_write_d, mem_write_d, jump_d, branch_d, alu_src_d, jalr_d,
+    output  [2:0] funct3_d,
     output  [1:0] result_src_d,
     output  [3:0] alu_control_d
 );
 
     wire [1:0] imm_src_d;
+
+    assign funct3_d = instr_d[14:12];
 
     
     control_unit control_unit(
@@ -21,6 +24,7 @@ module decode_cycle (
         .mem_write(mem_write_d),
         .jump(jump_d),
         .branch(branch_d),
+        .jalr(jalr_d),
         .alu_control(alu_control_d),
         .alu_src(alu_src_d),
         .imm_src(imm_src_d)

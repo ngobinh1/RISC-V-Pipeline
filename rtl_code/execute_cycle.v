@@ -1,6 +1,7 @@
 module execute_cycle(
     input wire [1:0] forward_a_e, forward_b_e, 
-    input wire jump_e, branch_e, alu_src_e,
+    input wire jump_e, branch_e, alu_src_e, jalr_e,
+    input wire [2:0] funct3_e,
     input wire [3:0] alu_control_e,
     input wire [31:0] alu_result_m, read_data_1_e, read_data_2_e, imm_ext_e, pc_e, pc_plus_4_e, result_w,
     input wire [4:0] rd_e, 
@@ -11,6 +12,8 @@ module execute_cycle(
     wire [31:0] alu_input_a;
     wire zero_e;
     wire overflow_e, carry_e, neg_e;
+    wire branch_taken_e;
+    wire [31:0] branch_adder_result;
 
     // Forwarding MUX for source A
     mux_3_1 src_a_emux (
@@ -54,15 +57,27 @@ module execute_cycle(
         .neg(neg_e)
     );
 
+    // Branch Condition Evaluation based on funct3
+    assign branch_taken_e = 
+        (funct3_e == 3'b000) ? zero_e :                  // BEQ
+        (funct3_e == 3'b001) ? ~zero_e :                 // BNE
+        (funct3_e == 3'b100) ? (neg_e != overflow_e) :   // BLT
+        (funct3_e == 3'b101) ? (neg_e == overflow_e) :   // BGE
+        (funct3_e == 3'b110) ? (~carry_e) :              // BLTU
+        (funct3_e == 3'b111) ? carry_e :                 // BGEU
+        1'b0;
+    
     // Branch adder
     adder branch_adder (
         .a(pc_e),
         .b(imm_ext_e),
-        .c(pc_target_e)
+        .c(branch_adder_result)
     );
 
+    //MUX for pc_target
+    assign pc_target_e = jalr_e ? (alu_result_e & 32'hFFFFFFFE) : branch_adder_result;
     // PC source control
-    assign pc_src_e = (zero_e & branch_e) | jump_e;
+    assign pc_src_e = (branch_taken_e & branch_e) | jump_e;
     
     // Write data for store instructions (use forwarded value)
     assign write_data_e = src_b_interim_e;

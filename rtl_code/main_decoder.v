@@ -1,7 +1,7 @@
 module main_decoder (
     input  [6:0] op,
     output  [1:0] result_src, imm_src, alu_op,
-    output  mem_write, alu_src, reg_write, jump, branch
+    output  mem_write, alu_src, reg_write, jump, branch, jalr
 );
     /*
     Instruction types and their opcodes:
@@ -69,5 +69,7 @@ module main_decoder (
     assign jump = (op == 7'b1101111 ||     // JAL
                    op == 7'b1100111) ?     // JALR
                    1'b1 : 1'b0;
+
+    assign jalr = (op == 7'b1100111) ? 1'b1 : 1'b0;
 
 endmodule

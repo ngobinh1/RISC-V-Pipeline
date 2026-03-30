@@ -11,7 +11,8 @@ module riscv_pipeline_top (
     wire [31:0] instr_d, pc_d, pc_plus_4_d;
     wire [31:0] read_data_1_d, read_data_2_d, imm_ext_d;
     wire [4:0] rs1_d, rs2_d, rd_d;
-    wire reg_write_d, mem_write_d, jump_d, branch_d, alu_src_d;
+    wire reg_write_d, mem_write_d, jump_d, branch_d, alu_src_d, jalr_d;
+    wire [2:0] funct3_d;
     wire [1:0] result_src_d;
     wire [3:0] alu_control_d;
     wire stall_d, flush_d;
@@ -20,7 +21,8 @@ module riscv_pipeline_top (
     wire [31:0] read_data_1_e, read_data_2_e, imm_ext_e, pc_e, pc_plus_4_e;
     wire [31:0] alu_result_e, write_data_e;
     wire [4:0] rs1_e, rs2_e, rd_e;
-    wire reg_write_e, mem_write_e, jump_e, branch_e, alu_src_e;
+    wire reg_write_e, mem_write_e, jump_e, branch_e, alu_src_e, jalr_e;
+    wire [2:0] funct3_e;
     wire [1:0] result_src_e, forward_a_e, forward_b_e;
     wire [3:0] alu_control_e;
     wire flush_e;
@@ -91,6 +93,8 @@ module riscv_pipeline_top (
         .mem_write_d(mem_write_d),
         .jump_d(jump_d),
         .branch_d(branch_d),
+        .jalr_d(jalr_d),
+        .funct3_d(funct3_d),
         .alu_src_d(alu_src_d),
         .result_src_d(result_src_d),
         .alu_control_d(alu_control_d)
@@ -106,6 +110,8 @@ module riscv_pipeline_top (
         .alu_src_d(alu_src_d),
         .jump_d(jump_d),
         .branch_d(branch_d),
+        .jalr_d(jalr_d),
+        .funct3_d(funct3_d),
         .result_src_d(result_src_d),
         .alu_control_d(alu_control_d),
         .read_data_1_d(read_data_1_d),
@@ -121,6 +127,8 @@ module riscv_pipeline_top (
         .alu_src_e(alu_src_e),
         .jump_e(jump_e),
         .branch_e(branch_e),
+        .jalr_e(jalr_e),
+        .funct3_e(funct3_e),
         .result_src_e(result_src_e),
         .alu_control_e(alu_control_e),
         .read_data_1_e(read_data_1_e),
@@ -139,6 +147,8 @@ module riscv_pipeline_top (
         .forward_b_e(forward_b_e),
         .jump_e(jump_e),
         .branch_e(branch_e),
+        .jalr_e(jalr_e),
+        .funct3_e(funct3_e),
         .alu_src_e(alu_src_e),
         .alu_control_e(alu_control_e),
         .alu_result_m(alu_result_m),

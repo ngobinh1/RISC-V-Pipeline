@@ -245,5 +245,3 @@ module riscv_pipeline_top (
     );
 
 endmodule
-
-
